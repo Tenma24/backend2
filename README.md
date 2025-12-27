@@ -84,7 +84,7 @@ Returns server health status and API key configuration.
 
 ## Key Design Decisions
 
-### 1. Backend Architecture
+### 1. Architecture
 All API requests are processed on the server side for several reasons:
 - **Security**: API keys are never exposed to the frontend
 - **Performance**: Server can handle rate limiting and caching
@@ -92,15 +92,7 @@ All API requests are processed on the server side for several reasons:
 - **Data Processing**: Clean and format data before sending to client
 
 
-### 3. Error Handling Strategy
-Implemented comprehensive error handling:
-- 404 errors for invalid city names
-- 401 errors for invalid API keys
-- 500 errors for server failures
-- User-friendly error messages in the UI
-- Console logging for debugging
-
-### 4. User Experience
+### 2. User Experience
 - Default city loads automatically (Astana)
 - Real-time loading indicators
 - Weather icons based on conditions
@@ -121,7 +113,7 @@ The main page shows the search bar and welcomes users with the default city (Ast
 Weather card displays all required information: temperature, feels-like, wind speed, humidity, pressure, coordinates, and country code.
 
 ### News Section
-![News Section](screenshots/news.png)
+![News Section](screens/news.png)
 
 News articles are displayed with titles, descriptions, sources, and publication dates.
 
