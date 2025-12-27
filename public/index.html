@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather & News App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .weather-card, .news-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .weather-card {
+            grid-column: span 2;
+        }
+
+        .weather-main {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .weather-icon {
+            font-size: 5rem;
+        }
+
+        .weather-temp {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .weather-info {
+            flex: 1;
+        }
+
+        .weather-city {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .weather-desc {
+            font-size: 1.2rem;
+            color: #666;
+            text-transform: capitalize;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .news-section {
+            grid-column: span 2;
+        }
+
+        .news-header {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .news-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .news-item {
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s;
+        }
+
+        .news-item:hover {
+            transform: translateX(5px);
+        }
+
+        .news-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .news-desc {
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .news-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .news-link:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .weather-card, .news-section {
+                grid-column: span 1;
+            }
+
+            .weather-main {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .weather-temp {
+                font-size: 3rem;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 Weather & News Dashboard</h1>
+            <p>Get real-time weather and latest news for any city</p>
+        </header>
+
+        <div class="search-box">
+            <form class="search-form" id="searchForm">
+                <input 
+                    type="text" 
+                    id="cityInput" 
+                    placeholder="Enter city name (e.g., Astana, London, Tokyo)" 
+                    value="Astana"
+                    required
+                >
+                <button type="submit">🔍 Search</button>
+            </form>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            Loading data...
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+
+        <div class="content" id="content" style="display: none;">
+            <div class="weather-card">
+                <div class="weather-main">
+                    <div class="weather-icon" id="weatherIcon">☀️</div>
+                    <div class="weather-info">
+                        <div class="weather-city" id="cityName">-</div>
+                        <div class="weather-desc" id="weatherDesc">-</div>
+                    </div>
+                    <div class="weather-temp" id="temperature">-°C</div>
+                </div>
+
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Feels Like</div>
+                        <div class="detail-value" id="feelsLike">-°C</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Wind Speed</div>
+                        <div class="detail-value" id="windSpeed">- m/s</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Humidity</div>
+                        <div class="detail-value" id="humidity">-%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Pressure</div>
+                        <div class="detail-value" id="pressure">- hPa</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Coordinates</div>
+                        <div class="detail-value" id="coordinates">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Country</div>
+                        <div class="detail-value" id="country">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="news-section">
+                <h2 class="news-header">📰 Latest News</h2>
+                <div class="news-grid" id="newsGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const searchForm = document.getElementById('searchForm');
+        const cityInput = document.getElementById('cityInput');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const content = document.getElementById('content');
+
+        const weatherIcons = {
+            '01d': '☀️', '01n': '🌙',
+            '02d': '⛅', '02n': '☁️',
+            '03d': '☁️', '03n': '☁️',
+            '04d': '☁️', '04n': '☁️',
+            '09d': '🌧️', '09n': '🌧️',
+            '10d': '🌦️', '10n': '🌧️',
+            '11d': '⛈️', '11n': '⛈️',
+            '13d': '❄️', '13n': '❄️',
+            '50d': '🌫️', '50n': '🌫️'
+        };
+
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const city = cityInput.value.trim();
+            if (city) {
+                await fetchData(city);
+            }
+        });
+
+        async function fetchData(city) {
+            loading.style.display = 'block';
+            content.style.display = 'none';
+            error.style.display = 'none';
+
+            try {
+                const response = await fetch(`/api/all?city=${encodeURIComponent(city)}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.message || 'Failed to fetch data');
+                }
+
+                displayWeather(data.weather);
+                displayNews(data.news);
+
+                loading.style.display = 'none';
+                content.style.display = 'grid';
+            } catch (err) {
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                error.textContent = `Error: ${err.message}`;
+            }
+        }
+
+        function displayWeather(weather) {
+            document.getElementById('weatherIcon').textContent = weatherIcons[weather.icon] || '🌤️';
+            document.getElementById('cityName').textContent = `${weather.city}, ${weather.countryCode}`;
+            document.getElementById('weatherDesc').textContent = weather.description;
+            document.getElementById('temperature').textContent = `${Math.round(weather.temperature)}°C`;
+            document.getElementById('feelsLike').textContent = `${Math.round(weather.feelsLike)}°C`;
+            document.getElementById('windSpeed').textContent = `${weather.windSpeed} m/s`;
+            document.getElementById('humidity').textContent = `${weather.humidity}%`;
+            document.getElementById('pressure').textContent = `${weather.pressure} hPa`;
+            document.getElementById('coordinates').textContent = `${weather.coordinates.lat.toFixed(2)}, ${weather.coordinates.lon.toFixed(2)}`;
+            document.getElementById('country').textContent = weather.countryCode;
+        }
+
+        function displayNews(news) {
+            const newsGrid = document.getElementById('newsGrid');
+            newsGrid.innerHTML = '';
+
+            if (news.articles && news.articles.length > 0) {
+                news.articles.forEach(article => {
+                    const newsItem = document.createElement('div');
+                    newsItem.className = 'news-item';
+                    newsItem.innerHTML = `
+                        <div class="news-title">${article.title}</div>
+                        <div class="news-desc">${article.description || 'No description available'}</div>
+                        <div class="news-meta">
+                            <span>📰 ${article.source}</span>
+                            <span>📅 ${new Date(article.publishedAt).toLocaleDateString()}</span>
+                        </div>
+                        <a href="${article.url}" target="_blank" class="news-link">Read more →</a>
+                    `;
+                    newsGrid.appendChild(newsItem);
+                });
+            } else {
+                newsGrid.innerHTML = '<p style="color: #666;">No news articles found for this city.</p>';
+            }
+        }
+
+        window.addEventListener('load', () => {
+            fetchData('Astana');
+        });
+    </script>
+</body>
+</html>
